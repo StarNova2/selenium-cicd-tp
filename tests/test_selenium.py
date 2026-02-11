@@ -34,6 +34,7 @@ class TestCalculator:
 
     def test_page_loads(self, driver):
         """Test 1: Verifier que la page se charge correctement"""
+
         file_path = os.path.abspath("../src/index.html")
         driver.get(f"file://{file_path}")
 
@@ -48,6 +49,7 @@ class TestCalculator:
 
     def test_addition(self, driver):
         """Test 2: Tester l'addition"""
+
         file_path = os.path.abspath("../src/index.html")
         driver.get(f"file://{file_path}")
 
@@ -66,10 +68,11 @@ class TestCalculator:
         result = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.ID, "result"))
         )
-        assert "RÃ©sultat: 15" in result.text
+        assert "Résultat: 15" in result.text
 
     def test_division_by_zero(self, driver):
         """Test 3: Tester la division par zero"""
+
         file_path = os.path.abspath("../src/index.html")
         driver.get(f"file://{file_path}")
 
@@ -88,10 +91,11 @@ class TestCalculator:
         result = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.ID, "result"))
         )
-        assert "Erreur: Division par zÃ©ro" in result.text
+        assert "Erreur: Division par zéro" in result.text
 
     def test_all_operations(self, driver):
         """Test 4: Tester toutes les operations"""
+
         file_path = os.path.abspath("../src/index.html")
         driver.get(f"file://{file_path}")
 
@@ -100,6 +104,12 @@ class TestCalculator:
             ("subtract", "8", "2", "6"),
             ("multiply", "8", "2", "16"),
             ("divide", "8", "2", "4"),
+        #--- MODIFICATIONS FROM CHAPTER 5 ---
+            #NOMBRES A VIRGULE
+            ("add","8.5", "3.5", "12"),
+            ("substract","2.5","1.5", "1"),
+            #NOMBRE NEGATIFS
+            ("multiply", "-5", "3",),
         ]
 
         for op, num1, num2, expected in operations:
@@ -125,6 +135,23 @@ class TestCalculator:
             )
             assert f"Résultat: {expected}" in result.text
             time.sleep(1)
+
+    def test_page_load_time(self, driver):
+        """Test 5: Mesurer le temps de chargement de la page"""
+        
+        start_time = time.time()
+        file_path = os.path.abspath("../src/index.html")
+        driver.get(f"file://{file_path}")
+
+        # Attendre que la page soit complètement chargée
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "calculator"))
+        )
+        load_time = time.time() - start_time
+        print(f"Temps de chargement: {load_time:.2f} secondes")
+        
+        # Vérifier que le chargement prend moins de 3 secondes
+        assert load_time < 3.0, f"Page trop lente à charger: {load_time:.2f}s"
 
 
 if __name__ == "__main__":
